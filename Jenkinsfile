@@ -47,11 +47,11 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                // Wrap the build in credentials so we are authenticated for the pull
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker build -t imt2023089/todo-list-cli:latest .
+                        # CHANGED: Using $DOCKER_USER instead of hardcoded ID
+                        docker build -t "$DOCKER_USER/todo-list-cli:latest" .
                     '''
                 }
             }
@@ -59,11 +59,11 @@ pipeline {
 
         stage('Docker Push') {
             steps {
-                // CHANGED: credentialsId is now 'docker-hub' to match the image
                 withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push imt2023089/todo-list-cli:latest
+                        # CHANGED: Using $DOCKER_USER here too
+                        docker push "$DOCKER_USER/todo-list-cli:latest"
                         docker logout
                     '''
                 }
