@@ -12,7 +12,9 @@ pipeline {
             steps {
                 sh '''
                     python3 --version
-                    pip3 install --upgrade pip
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip
                 '''
             }
         }
@@ -20,7 +22,8 @@ pipeline {
         stage('Lint') {
             steps {
                 sh '''
-                    pip3 install flake8
+                    . venv/bin/activate
+                    pip install flake8
                     flake8 todo.py test_todo.py --count --select=E9,F63,F7,F82 --show-source --statistics
                 '''
             }
@@ -29,7 +32,8 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                    pip3 install pytest pytest-cov
+                    . venv/bin/activate
+                    pip install pytest pytest-cov
                     python3 -m pytest test_todo.py -v --junitxml=test-results.xml --cov=todo --cov-report=xml:coverage.xml
                 '''
             }
