@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        PYTHON_VERSION = '3.x'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -25,7 +21,7 @@ pipeline {
             steps {
                 sh '''
                     pip3 install flake8
-                    flake8 todo.py test_todo.py --count --select=E9,F63,F7,F82 --show-source --statistics || true
+                    flake8 todo.py test_todo.py --count --select=E9,F63,F7,F82 --show-source --statistics
                 '''
             }
         }
@@ -40,7 +36,7 @@ pipeline {
             post {
                 always {
                     junit 'test-results.xml'
-                    publishCoverage adapters: [coberturaAdapter('coverage.xml')]
+                    publishCoverage adapters: [coberturaAdapter(path: 'coverage.xml')]
                 }
             }
         }
