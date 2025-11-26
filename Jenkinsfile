@@ -47,7 +47,13 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t imt2023089/todo-list-cli:latest .'
+                // Wrap the build in credentials so we are authenticated for the pull
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker build -t imt2023089/todo-list-cli:latest .
+                    '''
+                }
             }
         }
 
