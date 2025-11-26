@@ -1,6 +1,12 @@
 # User data files
 tasks.json
 
+# Test artifacts
+.coverage
+test-results.xml
+coverage.xml
+.pytest_cache/
+
 # Python
 __pycache__/
 *.py[cod]
